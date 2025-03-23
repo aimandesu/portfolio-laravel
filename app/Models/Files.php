@@ -8,10 +8,16 @@ use Illuminate\Database\Eloquent\Model;
 class Files extends Model
 {
     use HasFactory;
-    protected $fillable = ['files_id', 'education_id', 'description', 'file'];
+
+    protected $fillable = [
+        'files_id', 
+        'education_id', 
+        'description', 
+        'file',
+    ];
     
     public function education()
     {
-        return $this->belongsTo(Education::class, 'education_id', 'education_id');
+        return $this->belongsTo(Education::class);
     }
 }

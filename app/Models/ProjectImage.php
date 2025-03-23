@@ -8,10 +8,15 @@ use Illuminate\Database\Eloquent\Model;
 class ProjectImage extends Model
 {
     use HasFactory;
-    protected $fillable = ['image_id', 'project_id', 'image'];
+
+    protected $fillable = [
+        'image_id', 
+        'project_id', 
+        'image',
+    ];
     
     public function project()
     {
-        return $this->belongsTo(Project::class, 'project_id', 'image_id');
+        return $this->belongsTo(Project::class);
     }
 }

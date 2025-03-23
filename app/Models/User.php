@@ -17,26 +17,35 @@ class User extends Authenticatable
      *
      * @var array<int, string>
      */
-    protected $fillable =['user_id', 'name', 'current_title', 'location', 'image', 'address', 'email'];
+    protected $fillable =[
+        'user_id', 
+        'name', 
+        'current_title', 
+        'location', 
+        'image', 
+        'address', 
+        'email', 
+        'password',
+    ];
 
     public function project()
     {
-        return $this->hasMany(Project::class, 'user_id', 'project_id');
+        return $this->hasMany(Project::class);
     }
 
     public function experience()
     {
-        return $this->hasMany(Experience::class, 'user_id', 'experience_id');
+        return $this->hasMany(Experience::class);
     }
 
     public function skill()
     {
-        return $this->hasMany(Skill::class, 'user_id', 'skill_id');
+        return $this->hasMany(Skill::class);
     }
 
     public function education()
     {
-        return $this->hasMany(Education::class, 'user_id', 'education_id');
+        return $this->hasMany(Education::class);
     }
 
     /**
