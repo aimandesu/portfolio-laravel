@@ -20,10 +20,10 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 // routes/web.php
-Route::resource('projects', ProjectController::class);
-Route::resource('users', UserController::class);
-Route::resource('experiences', ExperienceController::class);
-Route::resource('skills', SkillController::class);
+Route::resource('project', ProjectController::class);
+Route::resource('user', UserController::class);
+Route::resource('experience', ExperienceController::class);
+Route::resource('skill', SkillController::class);
 Route::resource('education', EducationController::class);
 Route::resource('files', FileController::class);
 

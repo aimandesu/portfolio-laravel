@@ -19,17 +19,17 @@ class User extends Authenticatable
      */
     protected $fillable =['user_id', 'name', 'current_title', 'location', 'image', 'address', 'email'];
 
-    public function projects()
+    public function project()
     {
         return $this->hasMany(Project::class, 'user_id', 'project_id');
     }
 
-    public function experiences()
+    public function experience()
     {
         return $this->hasMany(Experience::class, 'user_id', 'experience_id');
     }
 
-    public function skills()
+    public function skill()
     {
         return $this->hasMany(Skill::class, 'user_id', 'skill_id');
     }

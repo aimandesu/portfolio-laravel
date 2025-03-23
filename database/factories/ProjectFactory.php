@@ -17,8 +17,6 @@ class ProjectFactory extends Factory
             'user_id' => \App\Models\User::inRandomOrder()->first()->user_id,
             'title' => $this->faker->title(),
             'description' => $this->faker->paragraph(),
-            'image_id' => \App\Models\ProjectImage::factory(),
-//            'image' => $this->faker->imageUrl(),
         ];
     }
 }

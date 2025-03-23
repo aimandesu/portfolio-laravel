@@ -16,8 +16,6 @@ class FilesFactory extends Factory
         return [
             'education_id' => \App\Models\Education::inRandomOrder()->first()->education_id,
             'description' => $this->faker->sentence(),
-//            'image' => $this->faker->imageUrl(),
-            'image_id' => \App\Models\FilesImage::factory(),
             'file' => $this->faker->filePath(),
         ];
     }

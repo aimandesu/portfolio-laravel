@@ -9,14 +9,9 @@ class Education extends Model
 {
     use HasFactory;
     protected $fillable = ['education_id', 'user_id', 'location', 'level', 'achievement'];
-
-    public function user()
-    {
-        return $this->belongsTo(User::class, 'user_id', 'education_id');
-    }
-
+    
     public function files()
     {
-        return $this->hasMany(Files::class, 'education_id', 'files_id');
+        return $this->hasMany(Files::class, 'education_id', 'education_id');
     }
 }

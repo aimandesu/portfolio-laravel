@@ -14,11 +14,9 @@ class CreateProjectsTable extends Migration
             $table->string('title');
             $table->text('description')->nullable();
 //            $table->string('image')->nullable();
-            $table->unsignedBigInteger('image_id')->nullable();
             $table->timestamps();
 
             $table->foreign('user_id')->references('user_id')->on('users')->onDelete('cascade');
-            $table->foreign('image_id')->references('image_id')->on('project_image')->onDelete('set null');
         });
     }
 
