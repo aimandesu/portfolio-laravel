@@ -1,6 +1,10 @@
 <?php
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\Experience\ExperienceController;
+use App\Http\Controllers\Files\FilesController;
+use App\Http\Controllers\User\UserController;
+use App\Models\Experience;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -19,46 +23,13 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-// routes/web.php
-Route::resource('project', ProjectController::class);
-Route::resource('user', UserController::class);
-Route::resource('experience', ExperienceController::class);
-Route::resource('skill', SkillController::class);
-Route::resource('education', EducationController::class);
-Route::resource('files', FileController::class);
+Route::resource('users', UserController::class)->except(['create', 'edit']);
+Route::name('uploadImage')->post('users/{user}/uploadImage', [UserController::class, 'uploadImage']);
 
-// app/Http/Controllers/ProjectController.php
-class ProjectController extends Controller
-{
-    // Implement CRUD operations for projects
-}
 
-// app/Http/Controllers/UserController.php
-class UserController extends Controller
-{
-    // Implement CRUD operations for users
-}
+Route::resource('experience', ExperienceController::class)->except(['create', 'edit']);
+Route::name('getExperienceAvailable')->get('getExperienceAvailable', [ExperienceController::class, 'getExperienceAvailable']);
 
-// app/Http/Controllers/ExperienceController.php
-class ExperienceController extends Controller
-{
-    // Implement CRUD operations for experiences
-}
 
-// app/Http/Controllers/SkillController.php
-class SkillController extends Controller
-{
-    // Implement CRUD operations for skills
-}
 
-// app/Http/Controllers/EducationController.php
-class EducationController extends Controller
-{
-    // Implement CRUD operations for education
-}
-
-// app/Http/Controllers/FileController.php
-class FileController extends Controller
-{
-    // Implement CRUD operations for files
-}
+Route::name('getFilesOnUser')->get('getFilesOnUser', [FilesController::class, 'getFilesOnUser']);
