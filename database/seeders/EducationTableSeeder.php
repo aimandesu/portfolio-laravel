@@ -9,6 +9,6 @@ class EducationTableSeeder extends Seeder
 {
     public function run()
     {
-        Education::factory()->count(20)->create();
+        Education::factory()->count(100)->create();
     }
 }

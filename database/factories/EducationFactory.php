@@ -14,7 +14,7 @@ class EducationFactory extends Factory
     public function definition()
     {
         return [
-            'user_id' => \App\Models\User::inRandomOrder()->first()->user_id,
+            'user_id' => \App\Models\User::inRandomOrder()->first()->id,
             'location' => $this->faker->city(),
             'level' => $this->faker->randomElement(['High School', 'Bachelor', 'Master', 'PhD']),
             'achievement' => $this->faker->sentence(),

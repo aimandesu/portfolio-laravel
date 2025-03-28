@@ -10,7 +10,6 @@ class Education extends Model
     use HasFactory;
     
     protected $fillable = [
-        'education_id', 
         'user_id', 
         'location', 
         'level', 
@@ -19,6 +18,6 @@ class Education extends Model
     
     public function files()
     {
-        return $this->hasMany(Files::class);
+        return $this->hasMany(Files::class, 'education_id');
     }
 }

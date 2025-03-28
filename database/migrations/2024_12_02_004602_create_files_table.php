@@ -9,14 +9,14 @@ class CreateFilesTable extends Migration
     public function up()
     {
         Schema::create('files', function (Blueprint $table) {
-            $table->id('files_id');
+            $table->id('id');
             $table->unsignedBigInteger('education_id');
             $table->text('description')->nullable();
 //            $table->string('image')->nullable();
             $table->string('file')->nullable();
             $table->timestamps();
 
-            $table->foreign('education_id')->references('education_id')->on('education');
+            $table->foreign('education_id')->references('id')->on('education');
            
         });
     }

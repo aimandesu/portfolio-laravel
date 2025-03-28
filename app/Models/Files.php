@@ -10,7 +10,6 @@ class Files extends Model
     use HasFactory;
 
     protected $fillable = [
-        'files_id', 
         'education_id', 
         'description', 
         'file',

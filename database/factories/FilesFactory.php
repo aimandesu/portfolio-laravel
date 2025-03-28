@@ -14,7 +14,7 @@ class FilesFactory extends Factory
     public function definition()
     {
         return [
-            'education_id' => \App\Models\Education::inRandomOrder()->first()->education_id,
+            'education_id' => \App\Models\Education::inRandomOrder()->first()->id,
             'description' => $this->faker->sentence(),
             'file' => $this->faker->filePath(),
         ];

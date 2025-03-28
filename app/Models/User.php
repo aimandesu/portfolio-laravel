@@ -29,22 +29,22 @@ class User extends Authenticatable
 
     public function project()
     {
-        return $this->hasMany(Project::class);
+        return $this->hasMany(Project::class, 'user_id');
     }
 
     public function experience()
     {
-        return $this->hasMany(Experience::class);
+        return $this->hasMany(Experience::class, 'user_id');
     }
 
     public function skill()
     {
-        return $this->hasMany(Skill::class);
+        return $this->hasMany(Skill::class, 'user_id');
     }
 
     public function education()
     {
-        return $this->hasMany(Education::class);
+        return $this->hasMany(Education::class, 'user_id');
     }
 
     /**

@@ -10,7 +10,6 @@ class Project extends Model
     use HasFactory;
     
     protected $fillable = [
-        'project_id', 
         'user_id', 
         'title', 
         'description',
@@ -23,6 +22,6 @@ class Project extends Model
 
     public function image()
     {
-        return $this->hasMany(ProjectImage::class);
+        return $this->hasMany(ProjectImage::class, 'project_id');
     }
 }
