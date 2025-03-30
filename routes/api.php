@@ -1,8 +1,11 @@
 <?php
 
+use App\Http\Controllers\AuthController;
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\Education\EducationController;
 use App\Http\Controllers\Experience\ExperienceController;
 use App\Http\Controllers\Files\FilesController;
+use App\Http\Controllers\Skill\SkillController;
 use App\Http\Controllers\User\UserController;
 use App\Models\Experience;
 use Illuminate\Http\Request;
@@ -23,10 +26,33 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::resource('users', UserController::class)->except(['create', 'edit']);
+//protected routes
+Route::group(['middleware' => ['auth:sanctum']], function () {
+    Route::get('users', [UserController::class, 'index']);  
+    Route::post('users', [UserController::class, 'store']); 
+    Route::put('users/{user}', [UserController::class, 'update']); 
+    Route::delete('users/{user}', [UserController::class, 'destroy']);
+
+    //Auth
+    Route::post('auth/logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');
+});
+
+//public routes
+//User
+Route::get('users/{user}', [UserController::class, 'show']);
 Route::name('uploadImage')->post('users/{user}/uploadImage', [UserController::class, 'uploadImage']);
 
+//Auth
+Route::post('auth/register', [AuthController::class, 'register']);
+Route::post('auth/login', [AuthController::class, 'login']); 
 
+//Skill
+Route::resource('skill', SkillController::class);
+
+//Education
+Route::resource('education', EducationController::class)->except(['create', 'edit']);
+
+//Experience
 Route::resource('experience', ExperienceController::class)->except(['create', 'edit']);
 Route::name('getExperienceAvailable')->get('getExperienceAvailable', [ExperienceController::class, 'getExperienceAvailable']);
 

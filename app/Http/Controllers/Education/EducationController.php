@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Education;
 
 use App\Http\Controllers\Controller;
 use App\Models\Education;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class EducationController extends Controller
@@ -15,7 +16,9 @@ class EducationController extends Controller
      */
     public function index()
     {
-        //
+        $education = Education::all();
+
+        return response()->json($education, 200);
     }
 
     /**
@@ -34,10 +37,30 @@ class EducationController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(Request $request, User $user)
     {
-        //
-    }
+        $rules = [
+            'user_id' => 'required|exists:users,id',
+            'location' => 'required',
+            'level' => 'in:diploma,degree',
+            'achievement' => 'nullable'
+        ];
+    
+        $this->validate($request, $rules);
+    
+        if (!$user) {
+            return response()->json(['error' => 'User not found'], 404);
+        }
+    
+        $education = Education::create([
+            'user_id' => $request->user_id,
+            'location' => $request->location,
+            'level' => $request->level,
+            'achievement' => $request->achievement,
+        ]);
+    
+        return response()->json(['message' => 'Record stored successfully', 'data' => $education], 201);
+    }    
 
     /**
      * Display the specified resource.
