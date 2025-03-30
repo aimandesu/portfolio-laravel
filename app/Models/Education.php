@@ -20,4 +20,10 @@ class Education extends Model
     {
         return $this->hasMany(Files::class, 'education_id');
     }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
 }

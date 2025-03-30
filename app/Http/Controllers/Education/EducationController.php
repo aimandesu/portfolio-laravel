@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Education;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class EducationController extends Controller
 {
@@ -16,19 +17,9 @@ class EducationController extends Controller
      */
     public function index()
     {
-        $education = Education::all();
+        $education = Education::with('user:id,name')->get();
 
         return response()->json($education, 200);
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
     }
 
     /**
@@ -37,23 +28,25 @@ class EducationController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request, User $user)
+    public function store(Request $request)
     {
         $rules = [
-            'user_id' => 'required|exists:users,id',
+            // 'user_id' => 'required|exists:users,id',
             'location' => 'required',
             'level' => 'in:diploma,degree',
             'achievement' => 'nullable'
         ];
     
         $this->validate($request, $rules);
+
+        $user = Auth::user();
     
         if (!$user) {
             return response()->json(['error' => 'User not found'], 404);
         }
     
         $education = Education::create([
-            'user_id' => $request->user_id,
+            'user_id' => $user->id,
             'location' => $request->location,
             'level' => $request->level,
             'achievement' => $request->achievement,
@@ -68,9 +61,16 @@ class EducationController extends Controller
      * @param  \App\Models\Education  $education
      * @return \Illuminate\Http\Response
      */
-    public function show(Education $education)
+    public function show(User $user)
     {
-        //
+        // Get education records where user_id matches the given user ID
+        $education = Education::where('user_id', $user->id)->get();
+    
+        if ($education->isEmpty()) {
+            return response()->json(['message' => 'No education records found for this user'], 404);
+        }
+    
+        return response()->json($education, 200);
     }
 
     /**
@@ -102,8 +102,18 @@ class EducationController extends Controller
      * @param  \App\Models\Education  $education
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Education $education)
+    public function destroyEducation(Request $request)
     {
-        //
+        $ids = $request->input('ids'); // Get array of IDs
+
+        if (!is_array($ids) || empty($ids)) {
+            return response()->json(['message' => 'No IDs provided'], 400);
+        }
+
+        // Delete records
+        Education::whereIn('id', $ids)->delete();
+
+        return response()->json(['message' => 'Records deleted successfully'], 200);
     }
+
 }
