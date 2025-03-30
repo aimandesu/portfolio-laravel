@@ -14,7 +14,8 @@ class ProjectImageFactory extends Factory
     public function definition()
     {
         return [
-            'project_id' => \App\Models\Project::factory(),
+            'project_id' => \App\Models\Project::inRandomOrder()->first()->id,
+            // \App\Models\Project::factory()->first()->project_id,
             'image' => $this->faker->imageUrl(),
         ];
     }

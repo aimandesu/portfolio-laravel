@@ -8,15 +8,20 @@ use Illuminate\Database\Eloquent\Model;
 class Project extends Model
 {
     use HasFactory;
-    protected $fillable = ['project_id', 'user_id', 'title', 'description', 'image_id'];
+    
+    protected $fillable = [
+        'user_id', 
+        'title', 
+        'description',
+    ];
 
     public function user()
     {
-        return $this->belongsTo(User::class, 'user_id', 'project_id');
+        return $this->belongsTo(User::class);
     }
 
     public function image()
     {
-        return $this->belongsTo(ProjectImage::class, 'image_id', 'project_id');
+        return $this->hasMany(ProjectImage::class, 'project_id');
     }
 }

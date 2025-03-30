@@ -16,6 +16,12 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
         // $schedule->command('inspire')->hourly();
+        $schedule->call(function () {
+            // This will run for all users
+            \Laravel\Sanctum\PersonalAccessToken::query()
+                ->where('created_at', '<', now()->subHour())
+                ->delete();
+        })->hourly();
     }
 
     /**

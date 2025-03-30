@@ -14,7 +14,7 @@ class SkillFactory extends Factory
     public function definition()
     {
         return [
-            'user_id' => \App\Models\User::inRandomOrder()->first()->user_id,
+            'user_id' => \App\Models\User::inRandomOrder()->first()->id,
             'name' => $this->faker->word(),
             'description' => $this->faker->sentence(),
         ];

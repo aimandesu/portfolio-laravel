@@ -14,6 +14,6 @@ class SkillsTableSeeder extends Seeder
      */
     public function run()
     {
-        Skill::factory()->count(20)->create();
+        Skill::factory()->count(100)->create();
     }
 }

@@ -1,6 +1,13 @@
 <?php
 
+use App\Http\Controllers\AuthController;
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\Education\EducationController;
+use App\Http\Controllers\Experience\ExperienceController;
+use App\Http\Controllers\Files\FilesController;
+use App\Http\Controllers\Skill\SkillController;
+use App\Http\Controllers\User\UserController;
+use App\Models\Experience;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -19,46 +26,40 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-// routes/web.php
-Route::resource('projects', ProjectController::class);
-Route::resource('users', UserController::class);
-Route::resource('experiences', ExperienceController::class);
-Route::resource('skills', SkillController::class);
-Route::resource('education', EducationController::class);
-Route::resource('files', FileController::class);
+//protected routes
+Route::group(['middleware' => ['auth:sanctum']], function () {
+    Route::get('users', [UserController::class, 'index']);  
+    // Route::post('users', [UserController::class, 'store']); 
+    Route::put('users/{user}', [UserController::class, 'update']); 
+    Route::delete('users/{user}', [UserController::class, 'destroy']);
 
-// app/Http/Controllers/ProjectController.php
-class ProjectController extends Controller
-{
-    // Implement CRUD operations for projects
-}
+    //Auth
+    Route::post('auth/logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');
 
-// app/Http/Controllers/UserController.php
-class UserController extends Controller
-{
-    // Implement CRUD operations for users
-}
+    //Education
+    Route::resource('education', EducationController::class)->except(['create', 'edit', 'destroy']);
+    Route::get('education/user/{user}', [EducationController::class, 'show']);
+    Route::delete('education/delete', [EducationController::class, 'destroyEducation']);
+    
+    //Skill
+    Route::resource('skill', SkillController::class)->except(['create', 'edit']);
+    Route::get('skill/user/{user}', [SkillController::class, 'show']);
+});
 
-// app/Http/Controllers/ExperienceController.php
-class ExperienceController extends Controller
-{
-    // Implement CRUD operations for experiences
-}
+//public routes
+//User
+Route::get('users/{user}', [UserController::class, 'show']);
+Route::name('uploadImage')->post('users/{user}/uploadImage', [UserController::class, 'uploadImage']);
 
-// app/Http/Controllers/SkillController.php
-class SkillController extends Controller
-{
-    // Implement CRUD operations for skills
-}
+//Auth
+Route::post('auth/register', [AuthController::class, 'register']);
+Route::post('auth/login', [AuthController::class, 'login']); 
 
-// app/Http/Controllers/EducationController.php
-class EducationController extends Controller
-{
-    // Implement CRUD operations for education
-}
 
-// app/Http/Controllers/FileController.php
-class FileController extends Controller
-{
-    // Implement CRUD operations for files
-}
+//Experience
+Route::resource('experience', ExperienceController::class)->except(['create', 'edit']);
+Route::name('getExperienceAvailable')->get('getExperienceAvailable', [ExperienceController::class, 'getExperienceAvailable']);
+
+
+
+Route::name('getFilesOnUser')->get('getFilesOnUser', [FilesController::class, 'getFilesOnUser']);

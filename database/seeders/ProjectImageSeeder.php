@@ -15,7 +15,7 @@ class ProjectImageSeeder extends Seeder
     public function run()
     {
         ProjectImage::factory()
-            ->count(20) // Generate 20 project images
+            ->count(100) // Generate 20 project images
             ->create();
     }
 }
