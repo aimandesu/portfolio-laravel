@@ -44,6 +44,12 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     //Skill
     Route::resource('skill', SkillController::class)->except(['create', 'edit']);
     Route::get('skill/user/{user}', [SkillController::class, 'show']);
+
+    //Experience
+    Route::resource('experience', ExperienceController::class)->except(['create', 'edit']);
+
+    //Files
+    Route::resource('files', FilesController::class)->except(['create', 'edit']);
 });
 
 //public routes
@@ -55,11 +61,6 @@ Route::name('uploadImage')->post('users/{user}/uploadImage', [UserController::cl
 Route::post('auth/register', [AuthController::class, 'register']);
 Route::post('auth/login', [AuthController::class, 'login']); 
 
-
 //Experience
-Route::resource('experience', ExperienceController::class)->except(['create', 'edit']);
 Route::name('getExperienceAvailable')->get('getExperienceAvailable', [ExperienceController::class, 'getExperienceAvailable']);
 
-
-
-Route::name('getFilesOnUser')->get('getFilesOnUser', [FilesController::class, 'getFilesOnUser']);

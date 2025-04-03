@@ -3,9 +3,12 @@
 namespace App\Http\Controllers\Files;
 
 use App\Http\Controllers\Controller;
+use App\Models\Education;
 use App\Models\Files;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 
 class FilesController extends Controller
 {
@@ -16,17 +19,9 @@ class FilesController extends Controller
      */
     public function index()
     {
-        //
-    }
+        $files = Files::with('education:id,user_id')->get();
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
+        return response()->json($files, 200);
     }
 
     /**
@@ -37,7 +32,49 @@ class FilesController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'education_id' => 'required|exists:education,id',
+            'file' => 'required|mimes:pdf|max:2048',
+            'description' => 'nullable|string',
+        ]);
+
+        // Ensure the education record belongs to the authenticated user
+        $education = Education::where('id', $request->education_id)
+            ->where('user_id', Auth::id())
+            ->first();
+
+        if (!$education) {
+            return response()->json(['message' => 'Unauthorized: This education record does not belong to you.'], 403);
+        }
+
+        $existingFile = Files::where('education_id', $request->education_id)->first();
+
+        if ($existingFile) {
+            // Delete the old file from storage
+            Storage::disk('public')->delete($existingFile->file);
+    
+            // Update the existing file record
+            $existingFile->update([
+                'description' => $request->description,
+                'file' => $request->file('file')->store('pdfs', 'public'),
+            ]);
+    
+            return response()->json([
+                'message' => 'File updated successfully',
+                'file' => $existingFile,
+            ], 200);
+        }
+
+        $file = Files::create([
+            'education_id' => $request->education_id,
+            'description' => $request->description,
+            'file' => $request->file('file')->store('pdfs', 'public'),
+        ]);
+    
+        return response()->json([
+            'message' => 'File uploaded successfully',
+            'file' => $file,
+        ], 201);
     }
 
     /**
@@ -80,16 +117,13 @@ class FilesController extends Controller
      * @param  \App\Models\Files  $files
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Files $files)
+    public function destroy(Files $file)
     {
-        //
-    }
-
-    public function getFilesOnUser(User $user)
-    {
-        $files = $user->education()->with('files')->get()->pluck('files')->flatten();
+        Storage::disk('public')->delete($file->file);
         
-        return response()->json($files, 200);
+        $file->delete();
+
+        return response()->json($file, 200);
     }
 
 }
