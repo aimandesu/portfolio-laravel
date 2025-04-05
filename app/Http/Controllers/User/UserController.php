@@ -91,14 +91,22 @@ class UserController extends Controller
     {
     
         $rules = [
-            'current_title' => 'required',
+            'name' => 'required',
+            'title' => 'required',
             'location' => 'required',
             'address' => 'required',
+            'email' => 'required',
         ];
 
         $request->validate($rules);
 
-        $user->fill($request->only(['current_title', 'location', 'address']));
+        $user->fill($request->only([
+            'name', 
+            'title', 
+            'location', 
+            'address', 
+            'email',
+        ],),);
 
         if (!$user->isDirty()) {
             return response()->json(['error' => 'You need to specify a different value to update', 'code' => 422], 422);
@@ -106,7 +114,7 @@ class UserController extends Controller
 
         $user->save();
 
-        return response()->json(['message' => 'User updated successfully']);
+        return response()->json(['message' => 'User updated successfully', 'data' => $user], 201);
     }
 
 
@@ -141,12 +149,12 @@ class UserController extends Controller
             $imagePath = $image->store('image', 'public'); // 'image' folder inside storage/app/public
 
             // Save the relative path like 'image/filename.jpg'
-            $user->image = $imagePath;
+            $user->image = 'http://127.0.0.1:8000/storage/' . $imagePath;
             $user->save();
 
             return response()->json([
                 'message' => 'User image updated successfully',
-                'image_url' => Storage::url($imagePath) // This gives you /storage/image/filename.jpg
+                'image_url' => 'http://127.0.0.1:8000' . Storage::url($imagePath) // This gives you /storage/image/filename.jpg
             ]);
         } else {
             return response()->json(['error' => 'No image found'], 400);

@@ -16,7 +16,7 @@ class UserFactory extends Factory
     {
         return [
             'name' => $this->faker->name(),
-            'current_title' => $this->faker->jobTitle(),
+            'title' => $this->faker->jobTitle(),
             'location' => $this->faker->city(),
             'image' => $this->faker->imageUrl(),
             'address' => $this->faker->address(),

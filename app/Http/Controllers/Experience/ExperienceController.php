@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Experience;
 use ExperienceType;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class ExperienceController extends Controller
 {
@@ -16,20 +17,9 @@ class ExperienceController extends Controller
      */
     public function index()
     {
-        $experience = config('custom.experience_available');
-        // $experiences = array_column(ExperienceType::cases(), 'value');
+        $experience = Experience::with('user:id,name')->get();
         
         return response()->json($experience, 200);
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
     }
 
     /**
@@ -40,7 +30,28 @@ class ExperienceController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $rules = [
+            'title' => 'string|required',
+            'location' => 'string|required',
+            'description' => 'nullable|string'
+        ];
+
+        $this->validate($request, $rules);
+
+        $user = Auth::user();
+    
+        if (!$user) {
+            return response()->json(['error' => 'User not found'], 404);
+        }
+
+        $experience = Experience::create([
+            'user_id' => $user->id,
+            'title' => $request->title,
+            'location' => $request->location,
+            'description' => $request->description,
+        ]);
+    
+        return response()->json(['message' => 'Record stored successfully', 'data' => $experience], 201);
     }
 
     /**
@@ -50,17 +61,6 @@ class ExperienceController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function show(Experience $experience)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Experience  $experience
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Experience $experience)
     {
         //
     }
@@ -85,7 +85,9 @@ class ExperienceController extends Controller
      */
     public function destroy(Experience $experience)
     {
-        //
+        $experience->delete();
+
+        return response()->json($experience, 200);
     }
 
     public function getExperienceAvailable(){

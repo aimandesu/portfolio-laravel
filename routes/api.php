@@ -64,3 +64,4 @@ Route::post('auth/login', [AuthController::class, 'login']);
 //Experience
 Route::name('getExperienceAvailable')->get('getExperienceAvailable', [ExperienceController::class, 'getExperienceAvailable']);
 
+
