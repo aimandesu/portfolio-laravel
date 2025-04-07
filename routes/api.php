@@ -28,38 +28,46 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 //protected routes
 Route::group(['middleware' => ['auth:sanctum']], function () {
+
+    //Users
     Route::get('users', [UserController::class, 'index']);  
     // Route::post('users', [UserController::class, 'store']); 
     Route::put('users/{user}', [UserController::class, 'update']); 
+    Route::post('users/{user}/uploadImage', [UserController::class, 'uploadImage']);
     Route::delete('users/{user}', [UserController::class, 'destroy']);
 
     //Auth
     Route::post('auth/logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');
 
     //Education
-    Route::resource('education', EducationController::class)->except(['create', 'edit', 'destroy']);
-    Route::get('education/user/{user}', [EducationController::class, 'show']);
+    Route::resource('education', EducationController::class)->except(['create', 'edit', 'destroy', 'update']);
     Route::delete('education/delete', [EducationController::class, 'destroyEducation']);
     
     //Skill
-    Route::resource('skill', SkillController::class)->except(['create', 'edit']);
+    Route::resource('skill', SkillController::class)->except(['create', 'edit', 'update']);
     Route::get('skill/user/{user}', [SkillController::class, 'show']);
 
     //Experience
     Route::resource('experience', ExperienceController::class)->except(['create', 'edit']);
 
     //Files
-    Route::resource('files', FilesController::class)->except(['create', 'edit']);
+    Route::resource('files', FilesController::class)->except(['create', 'edit', 'update', 'edit', 'show']);
 });
 
 //public routes
-//User
-Route::get('users/{user}', [UserController::class, 'show']);
-Route::name('uploadImage')->post('users/{user}/uploadImage', [UserController::class, 'uploadImage']);
-
 //Auth
 Route::post('auth/register', [AuthController::class, 'register']);
 Route::post('auth/login', [AuthController::class, 'login']); 
+
+//User
+Route::get('users/{user}', [UserController::class, 'show']);
+
+//Education
+Route::get('education/user/{user}', [EducationController::class, 'showAllEducationOnUserId']);
+Route::get('education/{education}/files', [EducationController::class, 'files']);
+
+//Files
+
 
 //Experience
 Route::name('getExperienceAvailable')->get('getExperienceAvailable', [ExperienceController::class, 'getExperienceAvailable']);

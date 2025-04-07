@@ -19,7 +19,7 @@ class EducationController extends Controller
     {
         $education = Education::with('user:id,name')->get();
 
-        return response()->json($education, 200);
+        return $this->showAll($education);
     }
 
     /**
@@ -30,11 +30,15 @@ class EducationController extends Controller
      */
     public function store(Request $request)
     {
+        if ((new Education)->isLocationGiven($request->input('location'))) {
+            return $this->errorResponse('Location is required.', 422);
+        }
+
         $rules = [
             // 'user_id' => 'required|exists:users,id',
-            'location' => 'required',
-            'level' => 'in:diploma,degree',
-            'achievement' => 'nullable'
+            'location' => 'required|string',
+            'level' => 'string|in:spm,diploma,degree,master',
+            'achievement' => 'string|nullable'
         ];
     
         $this->validate($request, $rules);
@@ -42,7 +46,7 @@ class EducationController extends Controller
         $user = Auth::user();
     
         if (!$user) {
-            return response()->json(['error' => 'User not found'], 404);
+            return $this->errorResponse('The user is not found', 409);
         }
     
         $education = Education::create([
@@ -52,7 +56,7 @@ class EducationController extends Controller
             'achievement' => $request->achievement,
         ]);
     
-        return response()->json(['message' => 'Record stored successfully', 'data' => $education], 201);
+        return $this->showOne($education, 201);
     }    
 
     /**
@@ -61,39 +65,9 @@ class EducationController extends Controller
      * @param  \App\Models\Education  $education
      * @return \Illuminate\Http\Response
      */
-    public function show(User $user)
+    public function show(Education $education)
     {
-        // Get education records where user_id matches the given user ID
-        $education = Education::where('user_id', $user->id)->get();
-    
-        if ($education->isEmpty()) {
-            return response()->json(['message' => 'No education records found for this user'], 404);
-        }
-    
-        return response()->json($education, 200);
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Education  $education
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Education $education)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Education  $education
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, Education $education)
-    {
-        //
+        return $this->showOne($education, 201);
     }
 
     /**
@@ -107,13 +81,31 @@ class EducationController extends Controller
         $ids = $request->input('ids'); // Get array of IDs
 
         if (!is_array($ids) || empty($ids)) {
-            return response()->json(['message' => 'No IDs provided'], 400);
+            return $this->errorResponse('No Ids Provided', 400);
         }
 
         // Delete records
         Education::whereIn('id', $ids)->delete();
 
-        return response()->json(['message' => 'Records deleted successfully'], 200);
+        return $this->showMessage('Records deleted succesfully');
     }
+
+    public function files(Education $education)
+    {
+        $files = $education->files;
+
+        return $this->showOne($files, 200);
+    }
+
+    public function showAllEducationOnUserId(User $user){
+        $education = Education::where('user_id', $user->id)->get();
+    
+        if ($education->isEmpty()) {
+            return response()->json(['message' => 'No education records found for this user'], 404);
+        }
+    
+        return $this->showAll($education);
+    }
+
 
 }

@@ -5,10 +5,17 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use App\Traits\ApiResponse;
 
 class AuthController extends Controller
 {
-    public function register(Request $request){
+
+    public function register(Request $request)
+    {
+        if ((new User)->isEmailAlreadyUsed($request->email)) {
+            return $this->errorResponse('Email already in use', 422);
+        }
+
         $fields = $request->validate([
             'name' => 'required',
             'email' => 'required|email|unique:users,email',
@@ -28,11 +35,15 @@ class AuthController extends Controller
             'token' => $token,
         ];
 
-        return response($response, 201);
-        
+        return $this->showMessage($response, 201);
     }
 
-    public function login(Request $request){
+    public function login(Request $request)
+    {
+        if ((new User)->isPasswordLess($request->password)) {
+            return $this->errorResponse('Password must be at least 6 characters', 422);
+        }
+
         $fields = $request->validate([
             'email' => 'required|email',
             'password' => 'required|min:6|string',
@@ -40,11 +51,8 @@ class AuthController extends Controller
 
         $user = User::where('email', $fields['email'])->first();
 
-        if(!$user || !Hash::check($fields['password'], $user->password)){
-            return response([
-                'message' => 'bad credential',
-               
-            ],  401,);
+        if (!$user || !Hash::check($fields['password'], $user->password)) {
+            return $this->errorResponse('Bad credentials', 401);
         }
 
         $token = $user->createToken('token')->plainTextToken;
@@ -54,16 +62,13 @@ class AuthController extends Controller
             'token' => $token,
         ];
 
-        return response($response, 201);
-        
+        return $this->showMessage($response, 201);
     }
 
-    public function logout(Request $request){
+    public function logout(Request $request)
+    {
         $request->user()->tokens()->delete();
-    
-        return response()->json([
-            'message' => 'Logged out successfully'
-        ], 200);
-    }    
 
+        return $this->showMessage('Logged out successfully');
+    }
 }

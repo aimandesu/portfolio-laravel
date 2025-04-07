@@ -19,7 +19,7 @@ class ExperienceController extends Controller
     {
         $experience = Experience::with('user:id,name')->get();
         
-        return response()->json($experience, 200);
+        return $this->showAll($experience);
     }
 
     /**
@@ -41,7 +41,7 @@ class ExperienceController extends Controller
         $user = Auth::user();
     
         if (!$user) {
-            return response()->json(['error' => 'User not found'], 404);
+            return $this->errorResponse('The user is not found', 409);
         }
 
         $experience = Experience::create([
@@ -51,7 +51,7 @@ class ExperienceController extends Controller
             'description' => $request->description,
         ]);
     
-        return response()->json(['message' => 'Record stored successfully', 'data' => $experience], 201);
+        return $this->showOne($experience);
     }
 
     /**
@@ -87,14 +87,14 @@ class ExperienceController extends Controller
     {
         $experience->delete();
 
-        return response()->json($experience, 200);
+        return $this->showOne($experience);
     }
 
     public function getExperienceAvailable(){
         $experience = config('custom.experience_available');
         // $experiences = array_column(ExperienceType::cases(), 'value');
         
-        return response()->json($experience, 200);
+        return $this->showOne($experience);
     }
 
 }

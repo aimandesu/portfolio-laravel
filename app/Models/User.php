@@ -20,10 +20,11 @@ class User extends Authenticatable
     protected $fillable =[
         'name', 
         'title', 
+        'about', 
         'location', 
         'image', 
         'address', 
-        'email', 
+        'email',
         'password',
     ];
 
@@ -65,4 +66,15 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    public function isEmailAlreadyUsed($email)
+    {
+        return self::where('email', $email)->exists();
+    }
+
+    public function isPasswordLess($password)
+    {
+        return strlen($password) < 6;
+    }
+
 }

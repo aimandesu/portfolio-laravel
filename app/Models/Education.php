@@ -18,12 +18,16 @@ class Education extends Model
     
     public function files()
     {
-        return $this->hasMany(Files::class, 'education_id');
+        return $this->hasOne(Files::class, 'education_id');
     }
 
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function isLocationGiven($location){
+        return !$location || trim($location) === '';
     }
 
 }

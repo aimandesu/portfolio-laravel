@@ -18,7 +18,7 @@ class SkillController extends Controller
     public function index()
     {
         $skill = Skill::all();
-        return response()->json($skill, 200);
+        return $this->showAll($skill);
     }
 
     /**
@@ -44,7 +44,7 @@ class SkillController extends Controller
             'description' => $request->description,
         ]);
 
-        return response()->json(['message' => 'Skill stored successfully', 'data' => $skill], 201);
+        return $this->showOne($skill, 201);
 
     }
 
@@ -54,39 +54,9 @@ class SkillController extends Controller
      * @param  \App\Models\Skill  $skill
      * @return \Illuminate\Http\Response
      */
-    public function show(User $user)
+    public function show(Skill $skill)
     {
-        $skill = Skill::where('user_id', $user->id)->get();
-
-        
-        if ($skill->isEmpty()) {
-            return response()->json(['message' => 'No skill records found for this user'], 404);
-        }
-    
-        return response()->json($skill, 200);
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Skill  $skill
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Skill $skill)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Skill  $skill
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, Skill $skill)
-    {
-        //
+        return $this->showOne($skill);
     }
 
     /**
@@ -99,6 +69,6 @@ class SkillController extends Controller
     {
         $skill->delete();
 
-        return response()->json($skill, 200);
+        return $this->showOne($skill);
     }
 }

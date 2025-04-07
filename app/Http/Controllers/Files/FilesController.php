@@ -21,7 +21,7 @@ class FilesController extends Controller
     {
         $files = Files::with('education:id,user_id')->get();
 
-        return response()->json($files, 200);
+        return $this->showAll($files, 200);
     }
 
     /**
@@ -33,7 +33,7 @@ class FilesController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'education_id' => 'required|exists:education,id',
+            'education_id' => 'required|exists:education,id|integer',
             'file' => 'required|mimes:pdf|max:2048',
             'description' => 'nullable|string',
         ]);
@@ -44,7 +44,7 @@ class FilesController extends Controller
             ->first();
 
         if (!$education) {
-            return response()->json(['message' => 'Unauthorized: This education record does not belong to you.'], 403);
+            return $this->errorResponse('Unauthorized: This education record does not belong to you.', 403); 
         }
 
         $existingFile = Files::where('education_id', $request->education_id)->first();
@@ -56,59 +56,19 @@ class FilesController extends Controller
             // Update the existing file record
             $existingFile->update([
                 'description' => $request->description,
-                'file' => $request->file('file')->store('pdfs', 'public'),
+                'file' => 'http://127.0.0.1:8000/storage/' . $request->file('file')->store('pdfs', 'public'),
             ]);
     
-            return response()->json([
-                'message' => 'File updated successfully',
-                'file' => $existingFile,
-            ], 200);
+            return $this->showOne($existingFile, 200);
         }
 
         $file = Files::create([
             'education_id' => $request->education_id,
             'description' => $request->description,
-            'file' => $request->file('file')->store('pdfs', 'public'),
+            'file' => 'http://127.0.0.1:8000/storage/' . $request->file('file')->store('pdfs', 'public'),
         ]);
     
-        return response()->json([
-            'message' => 'File uploaded successfully',
-            'file' => $file,
-        ], 201);
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\Files  $files
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Files $files)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Files  $files
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Files $files)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Files  $files
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, Files $files)
-    {
-        //
+        return $this->showOne($file, 200);
     }
 
     /**
@@ -123,7 +83,7 @@ class FilesController extends Controller
         
         $file->delete();
 
-        return response()->json($file, 200);
+        return $this->showOne($file, 200);
     }
 
 }

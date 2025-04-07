@@ -18,17 +18,7 @@ class UserController extends Controller
     public function index()
     {
         $users = User::all();
-        return response()->json($users, 200);
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
+        return $this->showAll($users);
     }
 
     /**
@@ -55,7 +45,7 @@ class UserController extends Controller
             'password' => $validatedData['password'],
         ]);
    
-        return response()->json($user, 201);
+        return $this->showOne($user, 201);
     }
 
     /**
@@ -66,18 +56,7 @@ class UserController extends Controller
      */
     public function show(User $user)
     {
-        return response()->json($user, 200);
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\User  $user
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(User $user)
-    {
-        //
+        return $this->showOne($user, 201);
     }
 
     /**
@@ -91,11 +70,12 @@ class UserController extends Controller
     {
     
         $rules = [
-            'name' => 'required',
-            'title' => 'required',
-            'location' => 'required',
-            'address' => 'required',
-            'email' => 'required',
+            'name' => 'required|string',
+            'title' => 'required|string',
+            'about' => 'nullable|string',
+            'location' => 'nullable|string',
+            'address' => 'nullable|string',
+            'email' => 'required|string',
         ];
 
         $request->validate($rules);
@@ -103,18 +83,19 @@ class UserController extends Controller
         $user->fill($request->only([
             'name', 
             'title', 
+            'about', 
             'location', 
             'address', 
             'email',
-        ],),);
+        ]));
 
         if (!$user->isDirty()) {
-            return response()->json(['error' => 'You need to specify a different value to update', 'code' => 422], 422);
+            return $this->errorResponse('You need to specify a different value to update', 422);
         }
 
         $user->save();
 
-        return response()->json(['message' => 'User updated successfully', 'data' => $user], 201);
+        return $this->showOne($user);
     }
 
 
@@ -152,12 +133,14 @@ class UserController extends Controller
             $user->image = 'http://127.0.0.1:8000/storage/' . $imagePath;
             $user->save();
 
-            return response()->json([
-                'message' => 'User image updated successfully',
-                'image_url' => 'http://127.0.0.1:8000' . Storage::url($imagePath) // This gives you /storage/image/filename.jpg
-            ]);
+            return $this->showOne($user, 201);
+
+            // return response()->json([
+            //     'message' => 'User image updated successfully',
+            //     'image_url' => 'http://127.0.0.1:8000' . Storage::url($imagePath) // This gives you /storage/image/filename.jpg
+            // ]);
         } else {
-            return response()->json(['error' => 'No image found'], 400);
+            return $this->errorResponse(`The image for user $user->id is not available`, 409);
         }
     }
 
