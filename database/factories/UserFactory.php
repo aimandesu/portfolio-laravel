@@ -16,6 +16,7 @@ class UserFactory extends Factory
     {
         return [
             'name' => $this->faker->name(),
+            'age' => $this->faker->numberBetween(18, 66),
             'title' => $this->faker->jobTitle(),
             'about' => $this->faker->paragraph(),
             'location' => $this->faker->city(),

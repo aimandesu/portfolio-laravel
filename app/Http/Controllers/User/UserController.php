@@ -78,6 +78,7 @@ class UserController extends Controller
     
         $rules = [
             'name' => 'required|string',
+            'age' => 'nullable|string',
             'title' => 'required|string',
             'about' => 'nullable|string',
             'location' => 'nullable|string',
@@ -89,6 +90,7 @@ class UserController extends Controller
 
         $user->fill($request->only([
             'name', 
+            'age',
             'title', 
             'about', 
             'location', 
