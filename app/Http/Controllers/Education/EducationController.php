@@ -7,6 +7,7 @@ use App\Models\Education;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 
 class EducationController extends Controller
 {
@@ -76,6 +77,27 @@ class EducationController extends Controller
      * @param  \App\Models\Education  $education
      * @return \Illuminate\Http\Response
      */
+
+     public function destroy(Education $education)
+     {
+
+         if ($education->files) {
+           
+             $filePath = $education->files->file;  
+             
+             Storage::disk('public')->delete($filePath);
+         
+             $education->files->delete();
+         }
+     
+         $education->delete();
+     
+         return $this->showOne($education);
+     }
+     
+     
+
+
     public function destroyEducation(Request $request)
     {
         $ids = $request->input('ids'); // Get array of IDs

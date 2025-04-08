@@ -54,10 +54,17 @@ class UserController extends Controller
      * @param  \App\Models\User  $user
      * @return \Illuminate\Http\Response
      */
-    public function show(User $user)
-    {
-        return $this->showOne($user, 201);
+    public function show(string $username)
+{
+    $user = User::where('name', $username)->first();
+
+    if (!$user) {
+        return $this->errorResponse("User with username '{$username}' not found.", 404);
     }
+
+    return $this->showOne($user);
+}
+
 
     /**
      * Update the specified resource in storage.
@@ -130,15 +137,11 @@ class UserController extends Controller
             $imagePath = $image->store('image', 'public'); // 'image' folder inside storage/app/public
 
             // Save the relative path like 'image/filename.jpg'
-            $user->image = 'http://127.0.0.1:8000/storage/' . $imagePath;
+            $user->image = $imagePath;
             $user->save();
 
             return $this->showOne($user, 201);
 
-            // return response()->json([
-            //     'message' => 'User image updated successfully',
-            //     'image_url' => 'http://127.0.0.1:8000' . Storage::url($imagePath) // This gives you /storage/image/filename.jpg
-            // ]);
         } else {
             return $this->errorResponse(`The image for user $user->id is not available`, 409);
         }

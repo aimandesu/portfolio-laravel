@@ -71,4 +71,11 @@ class SkillController extends Controller
 
         return $this->showOne($skill);
     }
+
+    public function showAllSkillOnUserId(User $user)
+    {
+        $skill = Skill::where('user_id', $user->id)->get();
+    
+        return $this->showAll($skill);
+    }
 }

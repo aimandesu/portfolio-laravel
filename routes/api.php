@@ -40,12 +40,11 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::post('auth/logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');
 
     //Education
-    Route::resource('education', EducationController::class)->except(['create', 'edit', 'destroy', 'update']);
+    Route::resource('education', EducationController::class)->except(['create', 'edit', 'update']);
     Route::delete('education/delete', [EducationController::class, 'destroyEducation']);
     
     //Skill
     Route::resource('skill', SkillController::class)->except(['create', 'edit', 'update']);
-    Route::get('skill/user/{user}', [SkillController::class, 'show']);
 
     //Experience
     Route::resource('experience', ExperienceController::class)->except(['create', 'edit']);
@@ -68,6 +67,8 @@ Route::get('education/{education}/files', [EducationController::class, 'files'])
 
 //Files
 
+//Skill
+Route::get('skill/user/{user}', [SkillController::class, 'showAllSkillOnUserId']);
 
 //Experience
 Route::name('getExperienceAvailable')->get('getExperienceAvailable', [ExperienceController::class, 'getExperienceAvailable']);

@@ -56,7 +56,7 @@ class FilesController extends Controller
             // Update the existing file record
             $existingFile->update([
                 'description' => $request->description,
-                'file' => 'http://127.0.0.1:8000/storage/' . $request->file('file')->store('pdfs', 'public'),
+                'file' => $request->file('file')->store('pdfs', 'public'),
             ]);
     
             return $this->showOne($existingFile, 200);
@@ -65,7 +65,7 @@ class FilesController extends Controller
         $file = Files::create([
             'education_id' => $request->education_id,
             'description' => $request->description,
-            'file' => 'http://127.0.0.1:8000/storage/' . $request->file('file')->store('pdfs', 'public'),
+            'file' =>  $request->file('file')->store('pdfs', 'public'),
         ]);
     
         return $this->showOne($file, 200);
