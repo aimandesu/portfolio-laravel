@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Experience;
 
 use App\Http\Controllers\Controller;
 use App\Models\Experience;
+use App\Models\User;
 use ExperienceType;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -95,6 +96,13 @@ class ExperienceController extends Controller
         // $experiences = array_column(ExperienceType::cases(), 'value');
         
         return $this->showOne($experience);
+    }
+
+    public function showAllExperienceOnUserId(User $user)
+    {
+        $experience = Experience::where('user_id', $user->id)->get();
+    
+        return $this->showAll($experience);
     }
 
 }

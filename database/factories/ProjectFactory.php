@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
+use ProjectType;
 
 class ProjectFactory extends Factory
 {
@@ -15,6 +16,7 @@ class ProjectFactory extends Factory
     {
         return [
             'user_id' => \App\Models\User::inRandomOrder()->first()->id,
+            'type' => $this->faker->randomElement(ProjectType::cases())->value,
             'title' => $this->faker->title(),
             'description' => $this->faker->paragraph(),
         ];

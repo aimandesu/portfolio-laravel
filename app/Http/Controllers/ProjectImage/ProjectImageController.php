@@ -3,8 +3,10 @@
 namespace App\Http\Controllers\ProjectImage;
 
 use App\Http\Controllers\Controller;
+use App\Models\Project;
 use App\Models\ProjectImage;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class ProjectImageController extends Controller
 {
@@ -15,18 +17,11 @@ class ProjectImageController extends Controller
      */
     public function index()
     {
-        //
+        $projectImage = ProjectImage::all();
+
+        return $this->showAll($projectImage);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
 
     /**
      * Store a newly created resource in storage.
@@ -36,7 +31,26 @@ class ProjectImageController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $rules = [
+            'project_id' => 'required|exists:projects,id', // Validate project exists
+            'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+        ];
+    
+        $this->validate($request, $rules);
+    
+        // Upload and store the image
+        $image = $request->file('image');
+        $imageName = time() . '_' . $image->getClientOriginalName();
+        $imagePath = $image->storeAs('images', $imageName, 'public');
+    
+        // Create the project image record
+        $projectImage = ProjectImage::create([
+            'project_id' => $request->project_id,
+            'image' => $imagePath
+        ]);
+    
+        // Return the created resource
+        return $this->showOne($projectImage, 201);
     }
 
     /**
@@ -49,17 +63,7 @@ class ProjectImageController extends Controller
     {
         //
     }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\ProjectImage  $projectImage
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(ProjectImage $projectImage)
-    {
-        //
-    }
+    
 
     /**
      * Update the specified resource in storage.
@@ -81,6 +85,10 @@ class ProjectImageController extends Controller
      */
     public function destroy(ProjectImage $projectImage)
     {
-        //
+        Storage::disk('public')->delete($projectImage->image);
+        
+        $projectImage->delete();
+
+        return $this->showOne($projectImage, 200);
     }
 }
