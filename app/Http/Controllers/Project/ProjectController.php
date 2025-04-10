@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Project;
 
 use App\Http\Controllers\Controller;
 use App\Models\Project;
+use App\Models\ProjectImage;
+use App\Models\User;
 use Illuminate\Http\Request;
 use ProjectType;
 use Illuminate\Support\Facades\Auth;
@@ -86,16 +88,62 @@ class ProjectController extends Controller
         //
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Project  $project
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, Project $project)
+   
+    public function updateProject(Request $request, Project $project)
     {
-        //
+        $rules = [
+            'type' => ['required', new Enum(ProjectType::class)],
+            'title' => 'string',
+            'description' => 'string',
+            'images' => 'nullable|array',
+            'images.*' => 'image|mimes:jpeg,png,jpg,gif|max:2048',
+            'deleted_images_id' => 'nullable|array',
+            'deleted_images_id.*' => 'numeric' // Use numeric instead of number
+        ];
+    
+        $request->validate($rules);
+    
+        // Update project details
+        if($request->has('type')){
+            $project->type = $request->type;
+        }
+        
+        if ($request->has('title')) {
+            $project->title = $request->title;
+        }
+    
+        if ($request->has('description')) {
+            $project->description = $request->description;
+        }
+    
+        $project->save();
+    
+        // Handle image deletions
+        if ($request->has('deleted_images_id') && !empty($request->deleted_images_id)) {
+            foreach ($request->deleted_images_id as $imageId) {
+                $imageToDelete = ProjectImage::find($imageId);
+            
+                if ($imageToDelete && $imageToDelete->project_id == $project->id) {
+                    Storage::disk('public')->delete($imageToDelete->image);
+                    $imageToDelete->delete();
+                }
+            }
+        }
+    
+        // Handle new image uploads
+        if ($request->hasFile('images')) {
+            foreach ($request->file('images') as $image) {
+                $filename = time() . '_' . $image->getClientOriginalName();
+                $path = $image->storeAs('images', $filename, 'public');
+            
+                $project->images()->create([
+                    'image' => $path
+                ]);
+            }
+        }
+    
+        $project->load('images');
+        return $this->showOne($project, 200); // Use 200 for updates, not 201
     }
 
     /**
@@ -125,4 +173,12 @@ class ProjectController extends Controller
         return $this->showOne($project);
 
     }
+
+    public function showAllProjectOnUserId(User $user)
+    {
+        $projects = Project::where('user_id', $user->id)->with('images') ->get();
+   
+        return $this->showAll($projects);
+    }
+
 }

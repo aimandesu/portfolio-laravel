@@ -55,15 +55,15 @@ class UserController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function show(string $username)
-{
-    $user = User::where('name', $username)->first();
+    {
+        $user = User::where('name', $username)->first();
 
-    if (!$user) {
-        return $this->errorResponse("User with username '{$username}' not found.", 404);
+        if (!$user) {
+            return $this->errorResponse("User with username '{$username}' not found.", 404);
+        }
+
+        return $this->showOne($user);
     }
-
-    return $this->showOne($user);
-}
 
 
     /**

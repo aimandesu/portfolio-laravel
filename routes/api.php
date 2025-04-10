@@ -55,7 +55,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::resource('files', FilesController::class)->except(['create', 'edit', 'update', 'edit', 'show']);
 
     //Project
-    Route::resource('project', ProjectController::class)->except(['create', 'edit']);
+    Route::resource('project', ProjectController::class)->except(['create', 'edit', 'update']);
 
     //Project Image
     Route::resource('projectImage', ProjectImageController::class)->except(['create', 'edit']);
@@ -83,5 +83,7 @@ Route::name('getExperienceAvailable')->get('getExperienceAvailable', [Experience
 Route::get('experience/user/{user}', [ExperienceController::class, 'showAllExperienceOnUserId']);
 
 //Project
+Route::get('project/user/{user}', [ProjectController::class, 'showAllProjectOnUserId']);
+Route::post('project/{project}/update', [ProjectController::class, 'updateProject']);
 
 
