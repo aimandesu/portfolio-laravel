@@ -10,7 +10,6 @@ class ProjectImage extends Model
     use HasFactory;
 
     protected $fillable = [
-   
         'project_id', 
         'image',
     ];

@@ -21,6 +21,7 @@ class DatabaseSeeder extends Seeder
             ProjectsTableSeeder::class,
             SkillsTableSeeder::class,
             ProjectImageSeeder::class,
+            JourneysSeeder::class,
         ]);
     }
 

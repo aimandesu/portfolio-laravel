@@ -16,13 +16,19 @@ class AuthController extends Controller
             return $this->errorResponse('Email already in use', 422);
         }
 
+        if ((new User)->isUsernameAlreadyUsed($request->username)) {
+            return $this->errorResponse('Username already in use', 422);
+        }
+
         $fields = $request->validate([
+            'username' => 'required|string|alpha_dash|unique:users,username',
             'name' => 'required',
             'email' => 'required|email|unique:users,email',
             'password' => 'required|min:6|confirmed',
         ]);
 
         $user = User::create([
+            'username' => $fields['username'],
             'name' => $fields['name'],
             'email' => $fields['email'],
             'password' => bcrypt($fields['password']),

@@ -5,6 +5,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Controllers\Education\EducationController;
 use App\Http\Controllers\Experience\ExperienceController;
 use App\Http\Controllers\Files\FilesController;
+use App\Http\Controllers\Journey\JourneyController;
 use App\Http\Controllers\Project\ProjectController;
 use App\Http\Controllers\ProjectImage\ProjectImageController;
 use App\Http\Controllers\Skill\SkillController;
@@ -59,6 +60,9 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
 
     //Project Image
     Route::resource('projectImage', ProjectImageController::class)->except(['create', 'edit']);
+
+    //Journey
+    Route::resource('journey', JourneyController::class)->except(['create', 'edit']);
 });
 
 //public routes
@@ -77,6 +81,9 @@ Route::get('education/{education}/files', [EducationController::class, 'files'])
 
 //Skill
 Route::get('skill/user/{user}', [SkillController::class, 'showAllSkillOnUserId']);
+
+//Journey
+Route::get('journey/user/{user}', [JourneyController::class, 'showAllJourneyOnUserId']);
 
 //Experience
 Route::name('getExperienceAvailable')->get('getExperienceAvailable', [ExperienceController::class, 'getExperienceAvailable']);

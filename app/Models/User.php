@@ -18,6 +18,7 @@ class User extends Authenticatable
      * @var array<int, string>
      */
     protected $fillable =[
+        'username',
         'name', 
         'age',
         'title', 
@@ -49,6 +50,11 @@ class User extends Authenticatable
         return $this->hasMany(Education::class, 'user_id');
     }
 
+    public function journey()
+    {
+        return $this->hasMany(Journey::class, 'user_id');
+    }
+
     /**
      * The attributes that should be hidden for serialization.
      *
@@ -71,6 +77,11 @@ class User extends Authenticatable
     public function isEmailAlreadyUsed($email)
     {
         return self::where('email', $email)->exists();
+    }
+
+    public function isUsernameAlreadyUsed($username)
+    {
+        return self::where('username', $username)->exists();
     }
 
     public function isPasswordLess($password)

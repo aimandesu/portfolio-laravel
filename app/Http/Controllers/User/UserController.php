@@ -77,6 +77,7 @@ class UserController extends Controller
     {
     
         $rules = [
+            'username' => 'required|string|alpha_dash|unique:users,username', //now can use without_spaces, check AppServiceProvider.php
             'name' => 'required|string',
             'age' => 'nullable|string',
             'title' => 'required|string',
@@ -89,6 +90,7 @@ class UserController extends Controller
         $request->validate($rules);
 
         $user->fill($request->only([
+            'username',
             'name', 
             'age',
             'title', 
