@@ -50,9 +50,9 @@ class User extends Authenticatable
         return $this->hasMany(Education::class, 'user_id');
     }
 
-    public function journey()
+    public function timeline()
     {
-        return $this->hasMany(Journey::class, 'user_id');
+        return $this->hasMany(Timeline::class, 'user_id');
     }
 
     /**
@@ -76,12 +76,18 @@ class User extends Authenticatable
 
     public function isEmailAlreadyUsed($email)
     {
-        return self::where('email', $email)->exists();
+        return self::where('email', $email)
+            ->where('id', '!=', $this->id)
+            ->exists();
+        // return self::where('email', $email)->exists();
     }
 
     public function isUsernameAlreadyUsed($username)
     {
-        return self::where('username', $username)->exists();
+        return self::where('username', $username)
+            ->where('id', '!=', $this->id)
+            ->exists();
+        // return self::where('username', $username)->exists();
     }
 
     public function isPasswordLess($password)

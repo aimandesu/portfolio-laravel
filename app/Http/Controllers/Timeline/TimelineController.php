@@ -1,14 +1,14 @@
 <?php
 
-namespace App\Http\Controllers\Journey;
+namespace App\Http\Controllers\Timeline;
 
 use App\Http\Controllers\Controller;
-use App\Models\Journey;
+use App\Models\Timeline;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
-class JourneyController extends Controller
+class TimelineController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -17,8 +17,8 @@ class JourneyController extends Controller
      */
     public function index()
     {
-        $journey = Journey::all();
-        return $this->showAll($journey);
+        $timeline = Timeline::all();
+        return $this->showAll($timeline);
     }
 
     /**
@@ -40,7 +40,7 @@ class JourneyController extends Controller
 
         $this->validate($request, $rules);
 
-        $skill = Journey::create([
+        $skill = Timeline::create([
             'user_id' => $user->id,
             'start_date' => $request->start_date,
             'end_date' => $request->end_date,
@@ -62,7 +62,6 @@ class JourneyController extends Controller
         //
     }
 
-   
     /**
      * Update the specified resource in storage.
      *
@@ -72,7 +71,7 @@ class JourneyController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        
     }
 
     /**
@@ -81,18 +80,18 @@ class JourneyController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Journey $journey)
+    public function destroy(Timeline $timeline)
     {
-        $journey->delete();
+        $timeline->delete();
 
-        return $this->showOne($journey);
+        return $this->showOne($timeline);
     }
 
-    public function showAllJourneyOnUserId(User $user)
+    public function showAllTimelineOnUserId(User $user)
     {
-        $journey = Journey::where('user_id', $user->id)->get();
+        $timeline = Timeline::where('user_id', $user->id)->get();
 
-        return $this->showAll($journey);
+        return $this->showAll($timeline);
     }
 
 }

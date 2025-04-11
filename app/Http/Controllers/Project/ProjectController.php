@@ -176,7 +176,7 @@ class ProjectController extends Controller
 
     public function showAllProjectOnUserId(User $user)
     {
-        $projects = Project::where('user_id', $user->id)->with('images') ->get();
+        $projects = Project::where('user_id', $user->id)->with('images')->get();
    
         return $this->showAll($projects);
     }

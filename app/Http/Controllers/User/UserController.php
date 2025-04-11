@@ -56,7 +56,7 @@ class UserController extends Controller
      */
     public function show(string $username)
     {
-        $user = User::where('name', $username)->first();
+        $user = User::where('username', $username)->first();
 
         if (!$user) {
             return $this->errorResponse("User with username '{$username}' not found.", 404);
@@ -75,16 +75,32 @@ class UserController extends Controller
      */
     public function update(Request $request, User $user)
     {
-    
+        if ($user->isEmailAlreadyUsed($request->email)) {
+            return $this->errorResponse('Email already in use', 422);
+        }
+
+        if ($user->isUsernameAlreadyUsed($request->username)) {
+            return $this->errorResponse('Username already in use', 422);
+        }
+
+        if (empty($request->title)) {
+            return $this->errorResponse('Title is empty', 422);
+        }        
+
+        // if (!$request->filled('title')) {
+        //     return $this->errorResponse('Title is empty', 422);
+        // }
+        
+
         $rules = [
-            'username' => 'required|string|alpha_dash|unique:users,username', //now can use without_spaces, check AppServiceProvider.php
+            'username' => 'required|string|alpha_dash|unique:users,username,'.$user->id, //now can use without_spaces, check AppServiceProvider.php
             'name' => 'required|string',
             'age' => 'nullable|string',
             'title' => 'required|string',
             'about' => 'nullable|string',
             'location' => 'nullable|string',
             'address' => 'nullable|string',
-            'email' => 'required|string',
+            'email' => 'required|string|email|unique:users,email,'.$user->id,
         ];
 
         $request->validate($rules);
@@ -100,9 +116,9 @@ class UserController extends Controller
             'email',
         ]));
 
-        if (!$user->isDirty()) {
-            return $this->errorResponse('You need to specify a different value to update', 422);
-        }
+        // if (!$user->isDirty()) {
+        //     return $this->errorResponse('You need to specify a different value to update', 422);
+        // }
 
         $user->save();
 

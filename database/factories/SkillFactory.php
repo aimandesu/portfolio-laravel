@@ -15,6 +15,7 @@ class SkillFactory extends Factory
     {
         return [
             'user_id' => \App\Models\User::inRandomOrder()->first()->id,
+            'level' => $this->faker->numberBetween(1,5),
             'name' => $this->faker->word(),
             'description' => $this->faker->sentence(),
         ];

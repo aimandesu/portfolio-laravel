@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Journey extends Model
+class Timeline extends Model
 {
     use HasFactory;
 
@@ -21,5 +21,5 @@ class Journey extends Model
     {
         return $this->belongsTo(User::class);
     }
-
+    
 }

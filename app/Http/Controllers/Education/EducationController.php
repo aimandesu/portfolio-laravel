@@ -120,11 +120,11 @@ class EducationController extends Controller
     }
 
     public function showAllEducationOnUserId(User $user){
-        $education = Education::where('user_id', $user->id)->get();
+        $education = Education::where('user_id', $user->id)->with('files')->get();
     
-        if ($education->isEmpty()) {
-            return response()->json(['message' => 'No education records found for this user'], 404);
-        }
+        // if ($education->isEmpty()) {
+        //     return response()->json(['message' => 'No education records found for this user'], 404);
+        // }
     
         return $this->showAll($education);
     }

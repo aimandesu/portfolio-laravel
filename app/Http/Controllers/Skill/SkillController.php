@@ -33,6 +33,7 @@ class SkillController extends Controller
 
         $rules = [
             'name' => 'required|string',
+            'level' => 'required|integer',
             'description' => 'nullable|string'
         ];
 
@@ -41,6 +42,7 @@ class SkillController extends Controller
         $skill = Skill::create([
             'user_id' => $user->id,
             'name' => $request->name,
+            'level' => $request->level,
             'description' => $request->description,
         ]);
 

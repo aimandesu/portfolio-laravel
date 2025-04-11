@@ -2,10 +2,10 @@
 
 namespace Database\Seeders;
 
-use App\Models\Journey;
+use App\Models\Timeline;
 use Illuminate\Database\Seeder;
 
-class JourneysSeeder extends Seeder
+class TimelineSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -14,6 +14,6 @@ class JourneysSeeder extends Seeder
      */
     public function run()
     {
-        Journey::factory()->count(100)->create();
+        Timeline::factory()->count(100)->create();
     }
 }
