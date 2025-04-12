@@ -167,4 +167,31 @@ class UserController extends Controller
         }
     }
 
+    public function uploadResume(User $user, Request $request)
+    {
+        $rules = [
+            'resume' => 'required|mimes:pdf|max:2048',
+        ];
+
+        $this->validate($request, $rules);
+
+        if($request->hasFile('resume')){
+
+            if($user->resume){
+                 // Delete the old file from storage
+                Storage::disk('public')->delete($user->resume);
+            }
+
+            $resume = $request->file('resume');
+            $resumePath = $resume->store('resume', 'public');
+
+            $user->resume = $resumePath;
+            $user->save();
+
+            return $this->showOne($user, 201);
+        
+        }
+
+    }
+
 }

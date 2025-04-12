@@ -33,11 +33,14 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::group(['middleware' => ['auth:sanctum']], function () {
 
     //Users
-    Route::get('users', [UserController::class, 'index']);  
-    // Route::post('users', [UserController::class, 'store']); 
     Route::put('users/{user}', [UserController::class, 'update']); 
     Route::post('users/{user}/uploadImage', [UserController::class, 'uploadImage']);
-    Route::delete('users/{user}', [UserController::class, 'destroy']);
+    Route::post('users/{user}/uploadResume', [UserController::class, 'uploadResume']);
+
+    //Not used - not relevant
+    // Route::get('users', [UserController::class, 'index']);  
+    // Route::post('users', [UserController::class, 'store']); 
+    // Route::delete('users/{user}', [UserController::class, 'destroy']);
 
     //Auth
     Route::post('auth/logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');

@@ -25,6 +25,7 @@ class UserFactory extends Factory
             'address' => $this->faker->address(),
             'email' => $this->faker->unique()->safeEmail(),
             'password' => bcrypt('password'),
+            'resume' => $this->faker->filePath(),
         ];
     }
 
