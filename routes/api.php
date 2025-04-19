@@ -96,4 +96,6 @@ Route::get('experience/user/{user}', [ExperienceController::class, 'showAllExper
 Route::get('project/user/{user}', [ProjectController::class, 'showAllProjectOnUserId']);
 Route::post('project/{project}/update', [ProjectController::class, 'updateProject']);
 
+//Test
+Route::get('users', [UserController::class, 'index']);  
 
